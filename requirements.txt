@@ -1,0 +1,20 @@
+# LoveDA-DeepLab 依赖
+
+# 深度学习框架
+torch>=2.0.0
+torchvision>=0.15.0
+
+# 图像处理
+Pillow>=9.0.0
+numpy>=1.23.0
+opencv-python>=4.7.0  # 可选，用于高级图像处理
+
+# 训练工具
+tqdm>=4.64.0
+tensorboard>=2.12.0
+
+# 评估
+scikit-learn>=1.2.0
+
+# 其他
+einops>=0.6.0         # 张量操作（可选，部分高级模块使用）
