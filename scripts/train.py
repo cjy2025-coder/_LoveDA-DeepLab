@@ -1,11 +1,6 @@
-﻿#!/usr/bin/env python3
+﻿
 # scripts/train.py
-"""
-使用方式：
-  python scripts/train.py
-  python scripts/train.py --data_root /path/to/LoveDA --epochs 80 --batch_size 8
-  python scripts/train.py --resume outputs/checkpoints/last.pth
-"""
+
 
 import os
 import sys
