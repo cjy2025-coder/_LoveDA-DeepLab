@@ -6,7 +6,7 @@ import os
 # ─────────────────────────────────────────────
 #  路径配置
 # ─────────────────────────────────────────────
-DATA_ROOT = "/workspace/LoveDA"          # ← 修改为你的数据集路径
+DATA_ROOT = "/workspace/LoveDA"         
 OUTPUT_DIR = "baseline_outputs"
 CHECKPOINT_DIR = os.path.join(OUTPUT_DIR, "checkpoints")
 LOG_DIR = os.path.join(OUTPUT_DIR, "logs")
