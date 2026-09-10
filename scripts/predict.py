@@ -3,6 +3,8 @@
 """
 LoveDA-DeepLab 推理脚本
 
+这里是之前的版本，使用时可能需要修改
+
 对 Test 集（无mask）进行预测，保存彩色分割图
 支持双模型对比预测
   python predict.py --checkpoint all_loveda_outputs/checkpoints/best_model.pth --baseline_checkpoint baseline@256@dropout0.1_outputs/checkpoints/best_model.pth

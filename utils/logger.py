@@ -167,7 +167,7 @@ class TrainingLogger:
             if miou > self.best_miou:
                 self.best_miou = miou
                 self.best_epoch = epoch
-                self.info(f"  ✓ 新最佳 mIoU: {self.best_miou*100:.2f}% @ Epoch {epoch}")
+                self.info(f"  新最佳 mIoU: {self.best_miou*100:.2f}% @ Epoch {epoch}")
 
         self.info(f"  当前最佳: mIoU={self.best_miou*100:.2f}% @ Epoch {self.best_epoch}")
 

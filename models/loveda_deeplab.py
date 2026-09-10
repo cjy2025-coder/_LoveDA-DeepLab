@@ -12,7 +12,7 @@ from models.modules.sa_aspp import ScaleAdaptiveASPP
 from models.prototype_classifier import PrototypeClassifier
 class LoveDADeepLab(nn.Module):
     """
-    鏢�硅繘鐨凞eepLabV3+ for LoveDA
+    DeepLabV3+ for LoveDA
     """
 
     def __init__(
@@ -30,7 +30,7 @@ class LoveDADeepLab(nn.Module):
     ):
         super().__init__()
 
-        # 鈹€鈹€ 楠ㄥ共缃戠粶 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+        # 载入骨干模型
         self.backbone = build_backbone(backbone, pretrained, output_stride)
         high_ch = self.backbone.high_level_channels   # 2048
         low1_ch = self.backbone.low_level_channels    # 256
@@ -66,9 +66,9 @@ class LoveDADeepLab(nn.Module):
     def forward(self, image: torch.Tensor, scene_label: torch.Tensor = None,mask = None):
         H, W = image.shape[2], image.shape[3]
 
-        """楠ㄥ共鐗瑰緛鎻愬彄1�7"""
+        
         low1, _low2, high = self.backbone(image)
-        """ASPP妯��潡"""
+
         aspp_feat = self.aspp(high)
         decoded_feat = self.decoder.get_features(aspp_feat, low1)
         
@@ -91,7 +91,6 @@ class LoveDADeepLab(nn.Module):
             return main_logits
 
         aux_logits = self.aux_head(aspp_feat, (H, W))
-        # 涓轰簡鍏煎 LoveDALoss 鐨勬帴鍙ｏ紝琛ュ厖缂哄け鐨勯敄1�7
         return {
             'main_logits':  main_logits,
             'aux_logits':   aux_logits,

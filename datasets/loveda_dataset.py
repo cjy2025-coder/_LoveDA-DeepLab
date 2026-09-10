@@ -219,43 +219,61 @@ def build_dataset(data_root: str, split: str, config) -> Dataset:
 #     )
 #     return loader
 
-"""使用加权采样和类别平衡"""
 
-def build_dataloader(data_root: str, split: str, config, shuffle: bool = None) -> DataLoader:
+
+def build_dataloader(data_root: str, split: str, config, shuffle: bool = None,enable_class_balance:bool =True) -> DataLoader:
     dataset = build_dataset(data_root, split, config)
 
-    if split.lower() == "train":
-        # Rural样本权重是Urban的2倍，解决场景不平衡
-        weights = []
-        for ds in dataset.datasets:
-            scene_weight = 2.0 if ds.scene == "Rural" else 1.0
-            weights.extend([scene_weight] * len(ds))
+    """使用加权采样和类别平衡"""
+    if enable_class_balance:
+        if split.lower() == "train":
+            # Rural样本权重是Urban的2倍，解决场景不平衡
+            weights = []
+            for ds in dataset.datasets:
+                scene_weight = 2.0 if ds.scene == "Rural" else 1.0
+                weights.extend([scene_weight] * len(ds))
 
-        sampler = WeightedRandomSampler(
-            weights=weights,
-            num_samples=len(weights),
-            replacement=True,
-        )
-        return DataLoader(
-            dataset,
-            batch_size=config.BATCH_SIZE,
-            sampler=sampler,          # 用sampler替换shuffle=True
-            num_workers=config.NUM_WORKERS,
-            pin_memory=config.PIN_MEMORY,
-            drop_last=True,
-            collate_fn=collate_fn,
-        )
+            sampler = WeightedRandomSampler(
+                weights=weights,
+                num_samples=len(weights),
+                replacement=True,
+            )
+            return DataLoader(
+                dataset,
+                batch_size=config.BATCH_SIZE,
+                sampler=sampler,          # 用sampler替换shuffle=True
+                num_workers=config.NUM_WORKERS,
+                pin_memory=config.PIN_MEMORY,
+                drop_last=True,
+                collate_fn=collate_fn,
+            )
+        else:
+            # 验证和测试不过采样
+            return DataLoader(
+                dataset,
+                batch_size=config.BATCH_SIZE,
+                shuffle=False,
+                num_workers=config.NUM_WORKERS,
+                pin_memory=config.PIN_MEMORY,
+                drop_last=False,
+                collate_fn=collate_fn,
+            )
     else:
-        # 验证和测试不过采样
-        return DataLoader(
+        dataset = build_dataset(data_root, split, config)
+
+        if shuffle is None:
+            shuffle = (split.lower() == "train")
+
+        loader = DataLoader(
             dataset,
             batch_size=config.BATCH_SIZE,
-            shuffle=False,
+            shuffle=shuffle,
             num_workers=config.NUM_WORKERS,
             pin_memory=config.PIN_MEMORY,
-            drop_last=False,
+            drop_last=(split.lower() == "train"),
             collate_fn=collate_fn,
         )
+        return loader     
 
 # def build_dataloader(data_root, split, config, shuffle=None):
 #     dataset = build_dataset(data_root, split, config)

@@ -1,24 +1,12 @@
 # utils/losses.py
 
-"""
-损失函数集合
 
-主要损失：
-  - OhemCrossEntropyLoss: 在线难样本挖掘交叉熵（主分割损失）
-
-辅助损失：
-  - BSMLoss:               背景抑制辅助损失（来自modules）
-  - SceneClassificationLoss: 场景分类辅助损失（来自modules）
-
-组合损失：
-  - LoveDALoss:            整合所有损失的总损失函数
-"""
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-# from models.modules.background_suppression import BSMLoss
+
 from models.modules.scene_adaptation import SceneClassificationLoss
 
 
@@ -206,18 +194,8 @@ class LoveDALoss(nn.Module):
         if use_dice:
             self.dice_criterion = DiceLoss(num_classes, ignore_index)
 
-        # 辅助损失
-        # self.bsm_criterion = BSMLoss(pos_weight=2.0)
         self.scene_criterion = SceneClassificationLoss(label_smoothing=0.1)
-        # from models.modules.boundary_loss import BoundaryAwareLoss
 
-        # # 加在其他criterion初始化之后
-        # self.boundary_criterion = BoundaryAwareLoss(
-        #     ignore_index=ignore_index,
-        #     boundary_weight=2.0,
-        #     dilation=3,
-        # )
-        # self.boundary_weight = 0.5  # 边界损失权重
     def forward(self, outputs: dict, mask: torch.Tensor, scene_label: torch.Tensor):
         main_logits  = outputs["main_logits"]
         aux_logits   = outputs["aux_logits"]
